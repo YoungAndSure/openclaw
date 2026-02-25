@@ -1,0 +1,238 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e3f2fd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff3e0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffe0b2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffebee;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffcdd2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad4" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8f5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f3e5f5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e1bee7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1200" height="1600" fill="#fafafa"/>
+
+  <!-- 标题 -->
+  <text x="600" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#333">
+    OpenClaw 架构图
+  </text>
+
+  <!-- ========== 用户输入层 ========== -->
+  <rect x="50" y="70" width="1100" height="140" fill="url(#grad1)" stroke="#1976d2" stroke-width="2" rx="10"/>
+  <text x="600" y="95" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1565c0">
+    用户输入层 (User Input Layer)
+  </text>
+
+  <!-- 输入渠道 -->
+  <rect x="80" y="115" width="100" height="70" fill="white" stroke="#1976d2" stroke-width="1.5" rx="5"/>
+  <text x="130" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">CLI命令</text>
+  <text x="130" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">(终端)</text>
+
+  <rect x="210" y="115" width="100" height="70" fill="white" stroke="#1976d2" stroke-width="1.5" rx="5"/>
+  <text x="260" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">Telegram</text>
+  <text x="260" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">(消息)</text>
+
+  <rect x="340" y="115" width="100" height="70" fill="white" stroke="#1976d2" stroke-width="1.5" rx="5"/>
+  <text x="390" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">Discord</text>
+  <text x="390" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">(消息)</text>
+
+  <rect x="470" y="115" width="100" height="70" fill="white" stroke="#1976d2" stroke-width="1.5" rx="5"/>
+  <text x="520" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">Slack</text>
+  <text x="520" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">(消息)</text>
+
+  <rect x="600" y="115" width="100" height="70" fill="white" stroke="#1976d2" stroke-width="1.5" rx="5"/>
+  <text x="650" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">Signal</text>
+  <text x="650" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">(消息)</text>
+
+  <rect x="730" y="115" width="100" height="70" fill="white" stroke="#1976d2" stroke-width="1.5" rx="5"/>
+  <text x="780" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">Web UI</text>
+  <text x="780" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">(浏览器)</text>
+
+  <rect x="860" y="115" width="100" height="70" fill="white" stroke="#1976d2" stroke-width="1.5" rx="5"/>
+  <text x="910" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">iMessage</text>
+  <text x="910" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">(消息)</text>
+
+  <rect x="990" y="115" width="100" height="70" fill="white" stroke="#1976d2" stroke-width="1.5" rx="5"/>
+  <text x="1040" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">WhatsApp</text>
+  <text x="1040" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">(消息)</text>
+
+  <!-- 向下箭头 -->
+  <line x1="600" y1="210" x2="600" y2="230" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ========== 路由层 ========== -->
+  <rect x="50" y="240" width="1100" height="100" fill="url(#grad2)" stroke="#f57c00" stroke-width="2" rx="10"/>
+  <text x="600" y="265" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#e65100">
+    路由层 (Routing Layer)
+  </text>
+  <text x="600" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">
+    src/routing/, src/channels/
+  </text>
+  <text x="600" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#333">
+    消息解析 → 会话识别 → 权限检查 → 消息分发
+  </text>
+
+  <!-- 向下箭头 -->
+  <line x1="600" y1="340" x2="600" y2="360" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ========== Gateway 核心 ========== -->
+  <rect x="50" y="370" width="1100" height="520" fill="url(#grad3)" stroke="#d32f2f" stroke-width="3" rx="10"/>
+  <text x="600" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#c62828">
+    🔥 Gateway 核心 (Port: 18789)
+  </text>
+
+  <!-- 1. 连接管理 -->
+  <rect x="80" y="420" width="1040" height="80" fill="white" stroke="#d32f2f" stroke-width="1.5" rx="5"/>
+  <text x="110" y="445" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333">1. 连接管理</text>
+  <text x="110" y="465" font-family="Arial, sans-serif" font-size="11" fill="#666">src/gateway/server-ws-runtime.ts</text>
+  <text x="110" y="485" font-family="Arial, sans-serif" font-size="12" fill="#333">WebSocket握手 • 设备配对 • 会话维护 • 心跳检测</text>
+
+  <!-- 2. 命令解析 -->
+  <rect x="80" y="510" width="1040" height="80" fill="white" stroke="#d32f2f" stroke-width="1.5" rx="5"/>
+  <text x="110" y="535" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333">2. 命令解析</text>
+  <text x="110" y="555" font-family="Arial, sans-serif" font-size="11" fill="#666">src/commands/agent.ts</text>
+  <text x="110" y="575" font-family="Arial, sans-serif" font-size="12" fill="#333">提取消息 • 解析选项 • 确定会话 • 加载配置</text>
+
+  <!-- 3. Agent 执行器 -->
+  <rect x="80" y="600" width="1040" height="270" fill="white" stroke="#d32f2f" stroke-width="1.5" rx="5"/>
+  <text x="110" y="625" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333">3. Agent 执行器</text>
+  <text x="110" y="645" font-family="Arial, sans-serif" font-size="11" fill="#666">src/agents/pi-embedded-runner.ts</text>
+
+  <!-- A. 准备阶段 -->
+  <rect x="100" y="660" width="230" height="90" fill="#ffebee" stroke="#d32f2f" stroke-width="1" rx="3"/>
+  <text x="215" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">A. 准备阶段</text>
+  <text x="215" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">加载配置 • 解析模型</text>
+  <text x="215" y="715" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">认证配置 • 系统提示</text>
+  <text x="215" y="730" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">历史会话 • 工具列表</text>
+
+  <!-- B. 工具注册 -->
+  <rect x="350" y="660" width="230" height="90" fill="#ffebee" stroke="#d32f2f" stroke-width="1" rx="3"/>
+  <text x="465" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">B. 工具注册</text>
+  <text x="465" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">browser • bash • read</text>
+  <text x="465" y="715" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">write • nodes • canvas</text>
+  <text x="465" y="730" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">message • image • TTS...</text>
+
+  <!-- C. LLM 调用 -->
+  <rect x="600" y="660" width="230" height="90" fill="#ffebee" stroke="#d32f2f" stroke-width="1" rx="3"/>
+  <text x="715" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">C. LLM 调用</text>
+  <text x="715" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">构建请求体</text>
+  <text x="715" y="715" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">流式调用 Claude/GPT-4</text>
+  <text x="715" y="730" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">处理响应</text>
+
+  <!-- D. 工具执行 -->
+  <rect x="850" y="660" width="250" height="90" fill="#ffebee" stroke="#d32f2f" stroke-width="1" rx="3"/>
+  <text x="975" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">D. 工具执行循环</text>
+  <text x="975" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">解析工具 → 查找处理器</text>
+  <text x="975" y="715" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">执行前钩子 → 执行工具</text>
+  <text x="975" y="730" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">执行后钩子 → 返回LLM</text>
+
+  <!-- E. 响应处理 -->
+  <rect x="100" y="770" width="1000" height="80" fill="#ffebee" stroke="#d32f2f" stroke-width="1" rx="3"/>
+  <text x="600" y="795" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">E. 响应处理</text>
+  <text x="600" y="815" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">流式输出 → 会话存储 → 消息投递 → 媒体处理</text>
+  <text x="600" y="835" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">~/.openclaw/sessions/</text>
+
+  <!-- 向下箭头 -->
+  <line x1="600" y1="890" x2="600" y2="910" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ========== 工具实现层 ========== -->
+  <rect x="50" y="920" width="1100" height="320" fill="url(#grad4)" stroke="#388e3c" stroke-width="2" rx="10"/>
+  <text x="600" y="945" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2e7d32">
+    🔧 工具实现层 (Tool Implementation)
+  </text>
+
+  <!-- 文件系统工具 -->
+  <rect x="80" y="965" width="340" height="80" fill="white" stroke="#388e3c" stroke-width="1.5" rx="5"/>
+  <text x="250" y="985" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">文件系统工具</text>
+  <text x="250" y="1005" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">src/agents/bash-tools.ts</text>
+  <text x="250" y="1025" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">read() • write() • edit() • bash()</text>
+
+  <!-- 浏览器工具 -->
+  <rect x="440" y="965" width="340" height="80" fill="white" stroke="#388e3c" stroke-width="1.5" rx="5"/>
+  <text x="610" y="985" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">浏览器工具</text>
+  <text x="610" y="1005" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">src/browser/</text>
+  <text x="610" y="1025" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">navigate() • click() • type() • screenshot()</text>
+
+  <!-- 节点工具 -->
+  <rect x="800" y="965" width="320" height="80" fill="white" stroke="#388e3c" stroke-width="1.5" rx="5"/>
+  <text x="960" y="985" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">节点工具</text>
+  <text x="960" y="1005" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">src/gateway/node-registry.ts</text>
+  <text x="960" y="1025" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">camera.snap • location.get • screen.record</text>
+
+  <!-- 消息工具 -->
+  <rect x="80" y="1060" width="340" height="80" fill="white" stroke="#388e3c" stroke-width="1.5" rx="5"/>
+  <text x="250" y="1080" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">消息工具</text>
+  <text x="250" y="1100" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">src/agents/tools/message-tool.ts</text>
+  <text x="250" y="1120" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">message.send() • message.reply()</text>
+
+  <!-- 其他工具 -->
+  <rect x="440" y="1060" width="680" height="80" fill="white" stroke="#388e3c" stroke-width="1.5" rx="5"/>
+  <text x="780" y="1080" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#333">其他工具</text>
+  <text x="780" y="1100" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">web_search() • web_fetch() • image.analyze() • tts.speak()</text>
+  <text x="780" y="1120" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">cron.schedule() • sessions.spawn() • subagents.spawn()</text>
+
+  <!-- 向下箭头 -->
+  <line x1="600" y1="1240" x2="600" y2="1260" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- ========== 插件扩展层 ========== -->
+  <rect x="50" y="1270" width="1100" height="200" fill="url(#grad5)" stroke="#7b1fa2" stroke-width="2" rx="10"/>
+  <text x="600" y="1295" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#6a1b9a">
+    🔌 插件扩展层 (Plugin Extensions)
+  </text>
+  <text x="600" y="1315" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">extensions/</text>
+
+  <!-- 频道插件 -->
+  <rect x="80" y="1330" width="200" height="50" fill="white" stroke="#7b1fa2" stroke-width="1.5" rx="5"/>
+  <text x="180" y="1355" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">telegram/ discord/ slack/</text>
+  <text x="180" y="1370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">频道支持</text>
+
+  <rect x="300" y="1330" width="200" height="50" fill="white" stroke="#7b1fa2" stroke-width="1.5" rx="5"/>
+  <text x="400" y="1355" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">signal/ whatsapp/ imessage/</text>
+  <text x="400" y="1370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">更多频道</text>
+
+  <rect x="520" y="1330" width="200" height="50" fill="white" stroke="#7b1fa2" stroke-width="1.5" rx="5"/>
+  <text x="620" y="1355" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">web/ voice-call/</text>
+  <text x="620" y="1370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">Web界面 & 语音</text>
+
+  <rect x="740" y="1330" width="200" height="50" fill="white" stroke="#7b1fa2" stroke-width="1.5" rx="5"/>
+  <text x="840" y="1355" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">memory-*/</text>
+  <text x="840" y="1370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">记忆存储后端</text>
+
+  <rect x="960" y="1330" width="160" height="50" fill="white" stroke="#7b1fa2" stroke-width="1.5" rx="5"/>
+  <text x="1040" y="1355" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">...</text>
+  <text x="1040" y="1370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">更多插件</text>
+
+  <!-- 插件能力 -->
+  <rect x="80" y="1400" width="1040" height="55" fill="white" stroke="#7b1fa2" stroke-width="1.5" rx="5"/>
+  <text x="600" y="1420" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">插件能力</text>
+  <text x="600" y="1440" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666">
+    注册新工具 • 生命周期钩子 • 自定义频道 • 自定义工具
+  </text>
+
+  <!-- 底部说明 -->
+  <rect x="50" y="1490" width="1100" height="90" fill="#f5f5f5" stroke="#999" stroke-width="1" rx="5"/>
+  <text x="600" y="1515" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333">
+    架构特点
+  </text>
+  <text x="600" y="1540" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">
+    模块化设计 • 插件扩展 • 多节点支持 • 多频道支持 • 流式处理 • 会话管理
+  </text>
+  <text x="600" y="1565" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#999">
+    核心: Gateway (WebSocket/HTTP) | 节点: iOS/Android/Headless | 工具: 20+ 内置工具
+  </text>
+</svg>
