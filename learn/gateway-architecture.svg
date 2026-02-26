@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="550" viewBox="0 0 880 550" role="img" aria-label="OpenClaw Gateway &#23618;&#27425;&#26550;&#26500;">
+  <defs>
+    <style>
+      .box { fill: #f6f5f3; stroke: #2b2b2b; stroke-width: 2; }
+      .layer1 { fill: #d4e9f7; stroke: #1a6b7c; stroke-width: 2; }
+      .layer2 { fill: #e8f4e0; stroke: #3d7a3d; stroke-width: 2; }
+      .layer3 { fill: #fff4e0; stroke: #b86b00; stroke-width: 2; }
+      .process { fill: #e8f4f8; stroke: #1a6b7c; stroke-width: 2; }
+      .external { fill: #f0f0f0; stroke: #666; stroke-width: 2; }
+      .cli { fill: #f5f0e8; stroke: #8b7355; stroke-width: 2; }
+      .text { font: 14px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #1a1a1a; }
+      .label { font: 12px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #333; }
+      .title { font: bold 16px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #1a1a1a; }
+      .layer-label { font: bold 11px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #555; }
+      .arrow { stroke: #2b2b2b; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .arrow-dash { stroke: #666; stroke-width: 1.5; stroke-dasharray: 6 4; fill: none; marker-end: url(#arrow2); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2b2b2b" />
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#666" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text class="title" x="440" y="28" text-anchor="middle">OpenClaw Gateway &#23618;&#27425;&#26550;&#26500;</text>
+  <text class="label" x="440" y="48" text-anchor="middle">&#21333;&#19968; Node.js &#36827;&#31243;&#65307;&#21319;&#32423;&#21518;&#39035;&#37325;&#21551;</text>
+
+  <!-- External: OpenClaw CLI -->
+  <rect class="cli" x="30" y="70" width="110" height="45" rx="8" />
+  <text class="text" x="85" y="98" text-anchor="middle">OpenClaw CLI</text>
+  <text class="label" x="85" y="112" text-anchor="middle">(Control UI &#31561;)</text>
+
+  <!-- Gateway process boundary (encloses all internal layers + external servers with padding) -->
+  <rect class="process" x="165" y="55" width="550" height="375" rx="12" />
+  <text class="layer-label" x="185" y="75" text-anchor="start">Gateway &#36827;&#31243;</text>
+
+  <!-- Layer 1: RPC Server (top - unified interface) -->
+  <rect class="layer1" x="195" y="95" width="490" height="65" rx="8" />
+  <text class="layer-label" x="215" y="108" text-anchor="start">&#23618; 1&#65306;&#32479;&#19968;&#25509;&#21475;</text>
+  <text class="text" x="440" y="132" text-anchor="middle">HTTP / WebSocket RPC Server&#65288;&#31471;&#21475; 18789&#65289;</text>
+  <text class="label" x="440" y="148" text-anchor="middle">agent.turn, send.message, channels.status, ...</text>
+
+  <!-- Arrow: CLI to RPC -->
+  <line class="arrow" x1="140" y1="92" x2="195" y2="122" />
+  <text class="label" x="165" y="102" text-anchor="middle">RPC</text>
+
+  <!-- Layer 2: Routing / Dispatch -->
+  <rect class="layer2" x="195" y="175" width="490" height="70" rx="8" />
+  <text class="layer-label" x="215" y="193" text-anchor="start">&#23618; 2&#65306;&#28040;&#24687;&#20998;&#21457;&#19982;&#36335;&#30001;</text>
+  <text class="text" x="440" y="218" text-anchor="middle">resolveAgentRoute&#12289;deliveryPlan&#12289;&#25191;&#34892; agent&#12289;&#22238;&#22797;&#20998;&#21457;</text>
+  <text class="label" x="440" y="236" text-anchor="middle">&#20837;&#36755;&#65306;channel &#8594; agent&#65307;&#20986;&#36755;&#65306;agent &#8594; channel</text>
+
+  <!-- Arrow: RPC to Routing -->
+  <line class="arrow" x1="440" y1="160" x2="440" y2="175" />
+
+  <!-- Layer 3: Channel clients -->
+  <rect class="layer3" x="195" y="265" width="490" height="70" rx="8" />
+  <text class="layer-label" x="215" y="283" text-anchor="start">&#23618; 3&#65306;&#28192;&#36947;&#23458;&#25143;&#31471;&#65288;&#36827;&#31243;&#20869;&#65289;</text>
+  <text class="text" x="440" y="308" text-anchor="middle">Feishu WebSocket</text>
+  <text class="label" x="280" y="326" text-anchor="middle">Telegram</text>
+  <text class="label" x="440" y="326" text-anchor="middle">Discord / Slack / Signal / WhatsApp</text>
+  <text class="label" x="600" y="326" text-anchor="middle">...</text>
+
+  <!-- Arrow: Routing to Clients -->
+  <line class="arrow" x1="440" y1="245" x2="440" y2="265" />
+
+  <!-- Layer 4: External servers (inside Gateway diagram, shows connection targets) -->
+  <rect class="external" x="195" y="355" width="145" height="50" rx="8" />
+  <text class="text" x="267" y="378" text-anchor="middle">Feishu</text>
+  <text class="label" x="267" y="393" text-anchor="middle">(open.feishu.cn)</text>
+
+  <rect class="external" x="358" y="355" width="145" height="50" rx="8" />
+  <text class="text" x="430" y="378" text-anchor="middle">Telegram</text>
+  <text class="label" x="430" y="393" text-anchor="middle">api.telegram.org</text>
+
+  <rect class="external" x="521" y="355" width="164" height="50" rx="8" />
+  <text class="text" x="603" y="378" text-anchor="middle">Discord / ...</text>
+  <text class="label" x="603" y="393" text-anchor="middle">&#22806;&#37096;&#24179;&#21488;</text>
+
+  <!-- Arrows: clients to external servers -->
+  <line class="arrow-dash" x1="267" y1="335" x2="267" y2="355" />
+  <line class="arrow-dash" x1="430" y1="335" x2="430" y2="355" />
+  <line class="arrow-dash" x1="603" y1="335" x2="603" y2="355" />
+  <text class="layer-label" x="210" y="418" text-anchor="start">&#22806;&#37096;&#26381;&#21153;&#22120;</text>
+
+  <!-- Note -->
+  <rect class="box" x="165" y="445" width="550" height="50" rx="8" />
+  <text class="label" x="440" y="468" text-anchor="middle">RPC Server &#26159;&#21807;&#19968;&#20837;&#21475;&#65307;&#21508;&#28192;&#36947;&#23458;&#25143;&#31471;&#36830;&#25509;&#33258;&#24049;&#24179;&#21488;&#12290;</text>
+  <text class="label" x="440" y="483" text-anchor="middle">&#28040;&#24687;&#20998;&#21457;&#36335;&#30001;&#22312;&#20013;&#38388;&#23618;&#65307;&#20840;&#37096;&#22312;&#19968;&#20010;&#36827;&#31243;&#20869;&#36816;&#34892;&#12290;</text>
+</svg>
