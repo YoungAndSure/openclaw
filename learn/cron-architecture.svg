@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1100">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1100" height="1100" fill="#f8fafc"/>
+  
+  <!-- Title -->
+  <text x="550" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e293b">OpenClaw Cron vs System Crontab</text>
+  
+  <!-- ==================== LEFT: System Crontab ==================== -->
+  <rect x="30" y="50" width="300" height="340" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+  <text x="180" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#b91c1c">System Crontab</text>
+  
+  <!-- Crontab file -->
+  <rect x="50" y="95" width="260" height="50" rx="6" fill="#fff" stroke="#94a3b8" stroke-width="1"/>
+  <text x="180" y="115" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#475569">/var/spool/cron/crontabs/*</text>
+  <text x="180" y="132" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Shell commands only</text>
+  
+  <!-- crond -->
+  <rect x="50" y="160" width="260" height="40" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="1"/>
+  <text x="180" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#b91c1c">crond (system daemon)</text>
+  
+  <!-- Limitations -->
+  <rect x="50" y="215" width="260" height="160" rx="6" fill="#fff" stroke="#fca5a5" stroke-width="1"/>
+  <text x="180" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#dc2626">Limitations</text>
+  
+  <text x="65" y="258" font-family="Arial, sans-serif" font-size="10" fill="#7f1d1d">X Cannot inject into agent session</text>
+  <text x="65" y="276" font-family="Arial, sans-serif" font-size="10" fill="#7f1d1d">X Cannot run isolated agent tasks</text>
+  <text x="65" y="294" font-family="Arial, sans-serif" font-size="10" fill="#7f1d1d">X No access to skills/tools/context</text>
+  <text x="65" y="312" font-family="Arial, sans-serif" font-size="10" fill="#7f1d1d">X No built-in message delivery</text>
+  <text x="65" y="330" font-family="Arial, sans-serif" font-size="10" fill="#7f1d1d">X No state tracking / token usage</text>
+  <text x="65" y="348" font-family="Arial, sans-serif" font-size="10" fill="#7f1d1d">X No error backoff / retry</text>
+  <text x="65" y="366" font-family="Arial, sans-serif" font-size="10" fill="#7f1d1d">X Windows not supported</text>
+  
+  <!-- ==================== RIGHT: OpenClaw Cron ==================== -->
+  <rect x="360" y="50" width="720" height="690" rx="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="720" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#166534">OpenClaw Cron (Gateway Built-in)</text>
+  
+  <!-- Core: setTimeout + State -->
+  <rect x="380" y="95" width="200" height="80" rx="6" fill="#fff" stroke="#64748b" stroke-width="1"/>
+  <text x="480" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#334155">Scheduler Core</text>
+  <text x="480" y="135" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#64748b">setTimeout (max 60s)</text>
+  <text x="480" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#64748b">+ croner for expression parsing</text>
+  
+  <!-- Storage -->
+  <rect x="380" y="190" width="200" height="50" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
+  <text x="480" y="212" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#475569">~/.openclaw/cron/jobs.json</text>
+  <text x="480" y="228" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Portable, cross-platform</text>
+  
+  <!-- ===== KEY ADVANTAGE 1: Agent Integration ===== -->
+  <rect x="600" y="95" width="460" height="280" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="830" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#166534">1. Deep Agent Integration</text>
+  
+  <!-- Main Session -->
+  <rect x="620" y="130" width="200" height="110" rx="4" fill="#fef9c3" stroke="#eab308" stroke-width="1"/>
+  <text x="720" y="148" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#854d0e">Main Session</text>
+  <text x="720" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#a16207">systemEvent injection</text>
+  <text x="630" y="180" font-family="Arial, sans-serif" font-size="8" fill="#78350f">Example: Daily note organizer</text>
+  <text x="630" y="193" font-family="Arial, sans-serif" font-size="7" fill="#92400e">Day1: "Organize notes" -> Done!</text>
+  <text x="630" y="206" font-family="Arial, sans-serif" font-size="7" fill="#92400e">Day2: "Continue" -> Remembers</text>
+  <text x="630" y="219" font-family="Arial, sans-serif" font-size="7" fill="#92400e">      yesterday's style!</text>
+  <rect x="630" y="225" width="180" height="12" rx="2" fill="#166534"/>
+  <text x="720" y="234" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#fff">Has full conversation memory</text>
+  
+  <!-- Isolated Session -->
+  <rect x="840" y="130" width="200" height="110" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+  <text x="940" y="148" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#1e40af">Isolated Session</text>
+  <text x="940" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#3b82f6">Full agent capabilities</text>
+  <text x="850" y="180" font-family="Arial, sans-serif" font-size="8" fill="#1e3a8a">Example: Daily email summary</text>
+  <text x="850" y="193" font-family="Arial, sans-serif" font-size="7" fill="#3b82f6">Day1: Summarize -> WhatsApp</text>
+  <text x="850" y="206" font-family="Arial, sans-serif" font-size="7" fill="#3b82f6">Day2: Summarize -> WhatsApp</text>
+  <text x="850" y="219" font-family="Arial, sans-serif" font-size="7" fill="#3b82f6">      (fresh start each time)</text>
+  <rect x="850" y="225" width="180" height="12" rx="2" fill="#1e40af"/>
+  <text x="940" y="234" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#fff">Independent, no history</text>
+  
+  <!-- CLI command -->
+  <rect x="620" y="250" width="420" height="35" rx="4" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
+  <text x="830" y="265" text-anchor="middle" font-family="Consolas, monospace" font-size="8" fill="#475569">openclaw cron add --session main|isolated ...</text>
+  <text x="830" y="278" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#64748b">Choose mode when creating job</text>
+  
+  <!-- Common features -->
+  <rect x="620" y="295" width="420" height="70" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+  <text x="830" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">Both modes have access to:</text>
+  <text x="640" y="330" font-family="Arial, sans-serif" font-size="8" fill="#166534">* All agent skills (gmail, calendar, web-search...)</text>
+  <text x="640" y="345" font-family="Arial, sans-serif" font-size="8" fill="#166534">* All tools (file ops, shell, browser...)</text>
+  <text x="830" y="330" font-family="Arial, sans-serif" font-size="8" fill="#166534">* Model/thinking config per job</text>
+  <text x="830" y="345" font-family="Arial, sans-serif" font-size="8" fill="#166534">* Full AI reasoning capabilities</text>
+  
+  <!-- Arrow from scheduler to agent -->
+  <path d="M 580 135 L 618 135" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arrowhead-green)" fill="none"/>
+  
+  <!-- ===== KEY ADVANTAGE 2: Message Delivery ===== -->
+  <rect x="380" y="260" width="200" height="115" rx="8" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="480" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#6d28d9">2. Message Delivery</text>
+  
+  <rect x="395" y="295" width="75" height="22" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="1"/>
+  <text x="432" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#166534">WhatsApp</text>
+  
+  <rect x="480" y="295" width="75" height="22" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+  <text x="517" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#1e40af">Telegram</text>
+  
+  <rect x="395" y="325" width="75" height="22" rx="4" fill="#fae8ff" stroke="#c026d3" stroke-width="1"/>
+  <text x="432" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#86198f">Discord</text>
+  
+  <rect x="480" y="325" width="75" height="22" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="517" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#92400e">Webhook</text>
+  
+  <text x="480" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#7c3aed">No extra scripts needed!</text>
+  
+  <!-- ===== KEY ADVANTAGE 3: State Tracking ===== -->
+  <rect x="380" y="390" width="300" height="100" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="530" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#92400e">3. Rich State Tracking</text>
+  
+  <text x="395" y="432" font-family="Consolas, monospace" font-size="8" fill="#78350f">lastRunStatus: ok/error/skipped</text>
+  <text x="395" y="448" font-family="Consolas, monospace" font-size="8" fill="#78350f">consecutiveErrors: 3</text>
+  <text x="395" y="464" font-family="Consolas, monospace" font-size="8" fill="#78350f">lastDeliveryStatus: delivered</text>
+  <text x="395" y="480" font-family="Consolas, monospace" font-size="8" fill="#78350f">usage: {tokens: 1234, ...}</text>
+  
+  <!-- ===== KEY ADVANTAGE 4: Error Handling ===== -->
+  <rect x="700" y="390" width="360" height="100" rx="8" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+  <text x="880" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#b91c1c">4. Smart Error Handling</text>
+  
+  <text x="715" y="432" font-family="Arial, sans-serif" font-size="9" fill="#7f1d1d">Exponential backoff:</text>
+  <text x="715" y="448" font-family="Consolas, monospace" font-size="8" fill="#991b1b">1st err: 30s, 2nd: 1m, 3rd: 5m, 4th: 15m, 5th+: 60m</text>
+  <text x="715" y="468" font-family="Arial, sans-serif" font-size="9" fill="#7f1d1d">Auto-disable after repeated failures</text>
+  <text x="715" y="484" font-family="Arial, sans-serif" font-size="9" fill="#7f1d1d">runMissedJobs() on Gateway restart</text>
+  
+  <!-- ===== KEY ADVANTAGE 5: Cross Platform ===== -->
+  <rect x="380" y="505" width="300" height="80" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+  <text x="530" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e40af">5. Cross Platform</text>
+  
+  <rect x="400" y="540" width="60" height="20" rx="4" fill="#fff" stroke="#64748b" stroke-width="1"/>
+  <text x="430" y="554" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#334155">Linux</text>
+  
+  <rect x="470" y="540" width="60" height="20" rx="4" fill="#fff" stroke="#64748b" stroke-width="1"/>
+  <text x="500" y="554" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#334155">macOS</text>
+  
+  <rect x="540" y="540" width="60" height="20" rx="4" fill="#fff" stroke="#64748b" stroke-width="1"/>
+  <text x="570" y="554" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#334155">Windows</text>
+  
+  <text x="530" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#1e40af">Same API everywhere, no platform setup</text>
+  
+  <!-- Schedule Types -->
+  <rect x="700" y="505" width="360" height="80" rx="8" fill="#fff" stroke="#64748b" stroke-width="1"/>
+  <text x="880" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#334155">Schedule Types</text>
+  
+  <rect x="720" y="545" width="90" height="25" rx="4" fill="#fee2e2" stroke="#ef4444" stroke-width="1"/>
+  <text x="765" y="562" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b91c1c">at (one-time)</text>
+  
+  <rect x="820" y="545" width="100" height="25" rx="4" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+  <text x="870" y="562" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#1d4ed8">every (10m)</text>
+  
+  <rect x="930" y="545" width="110" height="25" rx="4" fill="#f0fdf4" stroke="#22c55e" stroke-width="1"/>
+  <text x="985" y="562" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#166534">cron (0 9 * * *)</text>
+  
+  <!-- CLI Commands -->
+  <rect x="380" y="600" width="680" height="55" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
+  <text x="720" y="620" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#334155">CLI Commands</text>
+  <text x="720" y="640" text-anchor="middle" font-family="Consolas, monospace" font-size="9" fill="#64748b">openclaw cron list | add | edit | enable | disable | delete | run | status</text>
+  
+  <!-- Gateway RPC -->
+  <rect x="380" y="670" width="680" height="55" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1"/>
+  <text x="720" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#334155">Gateway RPC</text>
+  <text x="720" y="710" text-anchor="middle" font-family="Consolas, monospace" font-size="9" fill="#64748b">cron.list | cron.add | cron.update | cron.delete | cron.run | cron.status</text>
+  
+  <!-- ==================== COMPARISON ARROW ==================== -->
+  <path d="M 180 395 L 180 450 L 350 450" stroke="#64748b" stroke-width="2" stroke-dasharray="6,3" fill="none"/>
+  <text x="265" y="470" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Agent CAN use</text>
+  <text x="265" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#64748b">crontab via shell</text>
+  
+  <!-- ==================== BOTTOM: When to use which ==================== -->
+  <rect x="30" y="760" width="1040" height="150" rx="10" fill="#fff" stroke="#64748b" stroke-width="2"/>
+  <text x="550" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#334155">When to Use Which?</text>
+  
+  <!-- System crontab use case -->
+  <rect x="50" y="800" width="320" height="95" rx="6" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="210" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#b91c1c">Use System Crontab:</text>
+  <text x="65" y="840" font-family="Arial, sans-serif" font-size="9" fill="#7f1d1d">* Simple shell scripts (Python, Bash)</text>
+  <text x="65" y="856" font-family="Arial, sans-serif" font-size="9" fill="#7f1d1d">* Must run even if Gateway is down</text>
+  <text x="65" y="872" font-family="Arial, sans-serif" font-size="9" fill="#7f1d1d">* No AI agent involvement needed</text>
+  <text x="65" y="888" font-family="Arial, sans-serif" font-size="9" fill="#7f1d1d">* Ex: ml_paper_tracker (script + message send)</text>
+  
+  <!-- OpenClaw Main Session use case -->
+  <rect x="390" y="800" width="320" height="95" rx="6" fill="#fef9c3" stroke="#fbbf24" stroke-width="1"/>
+  <text x="550" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#854d0e">Use Main Session:</text>
+  <text x="405" y="840" font-family="Arial, sans-serif" font-size="9" fill="#78350f">* Need context from past conversations</text>
+  <text x="405" y="856" font-family="Arial, sans-serif" font-size="9" fill="#78350f">* "Continue what we discussed yesterday"</text>
+  <text x="405" y="872" font-family="Arial, sans-serif" font-size="9" fill="#78350f">* Agent should learn/adapt over time</text>
+  <text x="405" y="888" font-family="Arial, sans-serif" font-size="9" fill="#78350f">* Ex: Daily notes with consistent style</text>
+  
+  <!-- OpenClaw Isolated Session use case -->
+  <rect x="730" y="800" width="320" height="95" rx="6" fill="#dbeafe" stroke="#60a5fa" stroke-width="1"/>
+  <text x="890" y="820" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e40af">Use Isolated Session:</text>
+  <text x="745" y="840" font-family="Arial, sans-serif" font-size="9" fill="#1e3a8a">* Task is self-contained (no history)</text>
+  <text x="745" y="856" font-family="Arial, sans-serif" font-size="9" fill="#1e3a8a">* Don't want to pollute main conversation</text>
+  <text x="745" y="872" font-family="Arial, sans-serif" font-size="9" fill="#1e3a8a">* Need delivery to messaging channels</text>
+  <text x="745" y="888" font-family="Arial, sans-serif" font-size="9" fill="#1e3a8a">* Ex: Daily email summary -> WhatsApp</text>
+  
+  <!-- ==================== KEY INSIGHT ==================== -->
+  <rect x="30" y="930" width="1040" height="80" rx="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+  <text x="550" y="955" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">Key Insight</text>
+  <text x="550" y="980" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#166534">System crontab: Execute predetermined code (no AI, no memory, no learning)</text>
+  <text x="550" y="1000" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#166534">OpenClaw cron: Wake up an AI agent with memory, skills, and reasoning capabilities</text>
+  
+  <!-- ==================== NOTE ==================== -->
+  <rect x="30" y="1025" width="1040" height="55" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="550" y="1050" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#b91c1c">Important: Gateway must be running for OpenClaw cron jobs to execute</text>
+  <text x="550" y="1070" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#7f1d1d">If reliability without Gateway is critical, use system crontab (agent can set it up via shell)</text>
+</svg>

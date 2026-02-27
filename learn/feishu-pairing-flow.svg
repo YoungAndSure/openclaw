@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="700" viewBox="0 0 1100 700">
+  <defs>
+    <style>
+      .user { fill: #fff4e0; stroke: #b86b00; stroke-width: 2; }
+      .feishu-server { fill: #e0f0ff; stroke: #0066cc; stroke-width: 2; }
+      .gateway { fill: #e8f4e0; stroke: #3d7a3d; stroke-width: 2; }
+      .gateway-inner { fill: #d8eed8; stroke: #2d6a2d; stroke-width: 1; }
+      .pairing { fill: #ffe8e8; stroke: #cc4444; stroke-width: 2; }
+      .pairing-inner { fill: #ffd8d8; stroke: #aa3333; stroke-width: 1; }
+      .agent { fill: #e8e0f4; stroke: #5a4a9a; stroke-width: 2; }
+      .cli { fill: #f5f0e8; stroke: #8b7355; stroke-width: 2; }
+      .storage { fill: #f0f0f0; stroke: #666; stroke-width: 2; }
+      .divider { stroke: #bbb; stroke-width: 1; stroke-dasharray: 6 3; fill: none; }
+      .text { font: 13px sans-serif; fill: #1a1a1a; }
+      .label { font: 11px sans-serif; fill: #333; }
+      .title { font: bold 16px sans-serif; fill: #1a1a1a; }
+      .layer-label { font: bold 12px sans-serif; fill: #555; }
+      .inner-label { font: 11px sans-serif; fill: #444; }
+      .inner-desc { font: 10px sans-serif; fill: #555; }
+      .zone-label { font: bold 11px sans-serif; fill: #888; }
+      .arrow { stroke: #2b2b2b; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+      .arrow-green { stroke: #2d7a2d; stroke-width: 2; fill: none; marker-end: url(#arrow-green); }
+      .arrow-red { stroke: #cc4444; stroke-width: 2; fill: none; marker-end: url(#arrow-red); }
+      .flow-label { font: 10px sans-serif; fill: #666; }
+      .flow-num { font: bold 12px sans-serif; fill: #fff; }
+      .num-circle { fill: #555; }
+      .num-circle-green { fill: #2d7a2d; }
+      .num-circle-red { fill: #cc4444; }
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2b2b2b" />
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2d7a2d" />
+    </marker>
+    <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#cc4444" />
+    </marker>
+  </defs>
+
+  <text class="title" x="550" y="30" text-anchor="middle">OpenClaw Feishu Pairing Flow</text>
+  <text class="label" x="550" y="50" text-anchor="middle">Pairing = Allowlist Security Layer</text>
+
+  <text class="zone-label" x="100" y="80" text-anchor="middle">External Users</text>
+  <text class="zone-label" x="320" y="80" text-anchor="middle">Feishu Server</text>
+  <text class="zone-label" x="700" y="80" text-anchor="middle">OpenClaw Gateway</text>
+
+  <line class="divider" x1="200" y1="90" x2="200" y2="520" />
+  <line class="divider" x1="440" y1="90" x2="440" y2="520" />
+
+  <rect class="user" x="30" y="120" width="140" height="70" rx="8" />
+  <text class="text" x="100" y="148" text-anchor="middle">User A (Paired)</text>
+  <text class="inner-desc" x="100" y="165" text-anchor="middle">ou_517001b7...</text>
+
+  <rect class="user" x="30" y="220" width="140" height="70" rx="8" />
+  <text class="text" x="100" y="248" text-anchor="middle">User B (Not Paired)</text>
+  <text class="inner-desc" x="100" y="265" text-anchor="middle">ou_abc123...</text>
+
+  <rect class="feishu-server" x="220" y="100" width="200" height="280" rx="8" />
+  <text class="layer-label" x="320" y="125" text-anchor="middle">Feishu Platform</text>
+  <text class="inner-desc" x="320" y="142" text-anchor="middle">open.feishu.cn</text>
+
+  <rect class="storage" x="240" y="160" width="160" height="60" rx="4" />
+  <text class="inner-label" x="320" y="182" text-anchor="middle">Message Queue</text>
+  <text class="inner-desc" x="320" y="198" text-anchor="middle">WebSocket Connection</text>
+
+  <rect class="storage" x="240" y="240" width="160" height="60" rx="4" />
+  <text class="inner-label" x="320" y="262" text-anchor="middle">App Credentials</text>
+  <text class="inner-desc" x="320" y="278" text-anchor="middle">appId + appSecret</text>
+
+  <rect class="storage" x="240" y="320" width="160" height="45" rx="4" />
+  <text class="inner-label" x="320" y="347" text-anchor="middle">Event Dispatch</text>
+
+  <rect class="gateway" x="460" y="100" width="620" height="420" rx="8" />
+  <text class="layer-label" x="480" y="125" text-anchor="start">OpenClaw Gateway</text>
+
+  <rect class="gateway-inner" x="480" y="145" width="180" height="90" rx="4" />
+  <text class="inner-label" x="570" y="168" text-anchor="middle">Feishu Client</text>
+  <text class="inner-desc" x="570" y="186" text-anchor="middle">Connect WebSocket</text>
+  <text class="inner-desc" x="570" y="202" text-anchor="middle">Send/Receive Messages</text>
+  <text class="inner-desc" x="570" y="218" text-anchor="middle">Config: channels.feishu</text>
+
+  <rect class="pairing" x="680" y="145" width="200" height="150" rx="4" />
+  <text class="layer-label" x="780" y="168" text-anchor="middle">Pairing Security</text>
+  
+  <rect class="pairing-inner" x="695" y="180" width="170" height="45" rx="4" />
+  <text class="inner-label" x="780" y="200" text-anchor="middle">Check Allowlist</text>
+  <text class="inner-desc" x="780" y="215" text-anchor="middle">Is sender_id authorized?</text>
+
+  <rect class="pairing-inner" x="695" y="235" width="170" height="50" rx="4" />
+  <text class="inner-label" x="780" y="255" text-anchor="middle">Pairing Code Gen</text>
+  <text class="inner-desc" x="780" y="270" text-anchor="middle">Unauthorized = 6-digit code</text>
+
+  <rect class="agent" x="900" y="145" width="160" height="150" rx="4" />
+  <text class="layer-label" x="980" y="168" text-anchor="middle">Agent Execution</text>
+  <text class="inner-desc" x="980" y="188" text-anchor="middle">LLM Call</text>
+  <text class="inner-desc" x="980" y="206" text-anchor="middle">Tool Execution</text>
+  <text class="inner-desc" x="980" y="224" text-anchor="middle">Reply Generation</text>
+  <text class="inner-desc" x="980" y="242" text-anchor="middle">Token Consumption</text>
+  <text class="inner-desc" x="980" y="260" text-anchor="middle">Workspace Access</text>
+
+  <rect class="storage" x="680" y="320" width="200" height="60" rx="4" />
+  <text class="inner-label" x="780" y="345" text-anchor="middle">Allowlist Storage</text>
+  <text class="inner-desc" x="780" y="362" text-anchor="middle">~/.openclaw/pairing/</text>
+
+  <rect class="cli" x="480" y="400" width="200" height="100" rx="8" />
+  <text class="layer-label" x="580" y="425" text-anchor="middle">Admin CLI</text>
+  <text class="inner-desc" x="580" y="445" text-anchor="middle">openclaw pair list</text>
+  <text class="inner-desc" x="580" y="462" text-anchor="middle">openclaw pair approve CODE</text>
+  <text class="inner-desc" x="580" y="479" text-anchor="middle">openclaw pair revoke ID</text>
+
+  <circle class="num-circle" cx="175" cy="155" r="10" />
+  <text class="flow-num" x="175" y="159" text-anchor="middle">1</text>
+  <line class="arrow" x1="170" y1="155" x2="220" y2="190" />
+  <text class="flow-label" x="185" y="145" text-anchor="middle">Send</text>
+
+  <circle class="num-circle" cx="175" cy="255" r="10" />
+  <text class="flow-num" x="175" y="259" text-anchor="middle">1</text>
+  <line class="arrow" x1="170" y1="255" x2="220" y2="210" />
+
+  <circle class="num-circle" cx="425" cy="190" r="10" />
+  <text class="flow-num" x="425" y="194" text-anchor="middle">2</text>
+  <line class="arrow" x1="420" y1="190" x2="480" y2="190" />
+  <text class="flow-label" x="450" y="178" text-anchor="middle">Push</text>
+
+  <circle class="num-circle" cx="645" cy="190" r="10" />
+  <text class="flow-num" x="645" y="194" text-anchor="middle">3</text>
+  <line class="arrow" x1="660" y1="190" x2="695" y2="200" />
+  <text class="flow-label" x="668" y="178" text-anchor="middle">Verify</text>
+
+  <line class="arrow" x1="780" y1="295" x2="780" y2="320" />
+
+  <circle class="num-circle-green" cx="875" cy="200" r="10" />
+  <text class="flow-num" x="875" y="204" text-anchor="middle">4a</text>
+  <line class="arrow-green" x1="865" y1="200" x2="900" y2="200" />
+  <text class="flow-label" x="887" y="188" text-anchor="middle" fill="#2d7a2d">Authorized</text>
+
+  <circle class="num-circle-red" cx="645" cy="260" r="10" />
+  <text class="flow-num" x="645" y="264" text-anchor="middle">4b</text>
+  <path class="arrow-red" d="M 695 260 L 660 260 L 660 210 L 480 210" fill="none" marker-end="url(#arrow-red)" />
+  <text class="flow-label" x="620" y="248" text-anchor="middle" fill="#cc4444">Unauthorized</text>
+  <text class="flow-label" x="580" y="225" text-anchor="middle" fill="#cc4444">Return Pairing Code</text>
+
+  <circle class="num-circle" cx="205" cy="340" r="10" />
+  <text class="flow-num" x="205" y="344" text-anchor="middle">5</text>
+  <path class="arrow" d="M 480 205 L 400 205 L 400 342 L 220 342" fill="none" />
+  <path d="M 980 295 L 980 342 L 400 342" fill="none" stroke="#2b2b2b" stroke-width="1.5" />
+  <text class="flow-label" x="360" y="335" text-anchor="middle">Reply</text>
+
+  <circle class="num-circle" cx="545" cy="350" r="10" />
+  <text class="flow-num" x="545" y="354" text-anchor="middle">6</text>
+  <path class="arrow" d="M 580 400 L 580 380 L 680 380 L 680 350" fill="none" />
+  <text class="flow-label" x="630" y="392" text-anchor="middle">Approve Pairing</text>
+
+  <rect x="30" y="550" width="350" height="130" rx="8" fill="#f8f8f8" stroke="#ddd" stroke-width="1" />
+  <text class="layer-label" x="50" y="575">Flow Description</text>
+  <text class="inner-desc" x="50" y="595">1. User sends message to Feishu bot</text>
+  <text class="inner-desc" x="50" y="612">2. Feishu pushes to OpenClaw via WebSocket</text>
+  <text class="inner-desc" x="50" y="629">3. Pairing layer checks if sender in Allowlist</text>
+  <text class="inner-desc" x="50" y="646" fill="#2d7a2d">4a. Authorized: Agent executes and replies</text>
+  <text class="inner-desc" x="50" y="663" fill="#cc4444">4b. Unauthorized: Returns pairing code</text>
+
+  <rect x="420" y="550" width="320" height="130" rx="8" fill="#fff8f8" stroke="#cc4444" stroke-width="1" />
+  <text class="layer-label" x="440" y="575" fill="#cc4444">Security Purpose</text>
+  <text class="inner-desc" x="440" y="595">Anyone can message the Feishu bot</text>
+  <text class="inner-desc" x="440" y="612">But only Allowlist users trigger Agent</text>
+  <text class="inner-desc" x="440" y="629">Prevents:</text>
+  <text class="inner-desc" x="450" y="646">- Unauthorized LLM token consumption</text>
+  <text class="inner-desc" x="450" y="663">- Unauthorized workspace/command access</text>
+
+  <rect x="780" y="550" width="280" height="130" rx="8" fill="#f0f8ff" stroke="#0066cc" stroke-width="1" />
+  <text class="layer-label" x="800" y="575" fill="#0066cc">Related Config</text>
+  <text class="inner-desc" x="800" y="595">channels.feishu.appId</text>
+  <text class="inner-desc" x="800" y="612">channels.feishu.appSecret</text>
+  <text class="inner-desc" x="800" y="629">= Which Feishu app to connect</text>
+  <text class="inner-desc" x="800" y="650">Allowlist stored locally</text>
+  <text class="inner-desc" x="800" y="667">= ~/.openclaw/pairing/</text>
+
+</svg>

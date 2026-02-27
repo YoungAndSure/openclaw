@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="950" viewBox="0 0 1100 950" role="img" aria-label="OpenClaw Message and Session Processing Flow">
+  <defs>
+    <style>
+      .channel { fill: #fff4e0; stroke: #b86b00; stroke-width: 2; }
+      .debounce { fill: #e0f4f4; stroke: #1a7a7a; stroke-width: 2; }
+      .debounce-inner { fill: #d0e8e8; stroke: #0a6a6a; stroke-width: 1; }
+      .session { fill: #e8e0f4; stroke: #5a4a9a; stroke-width: 2; }
+      .session-inner { fill: #d8d0e8; stroke: #4a3a8a; stroke-width: 1; }
+      .queue { fill: #f4e8e0; stroke: #9a5a4a; stroke-width: 2; }
+      .queue-inner { fill: #e8d8d0; stroke: #8a4a3a; stroke-width: 1; }
+      .agent { fill: #e8f4e0; stroke: #3d7a3d; stroke-width: 2; }
+      .agent-inner { fill: #d8eed8; stroke: #2d6a2d; stroke-width: 1; }
+      .subagent { fill: #f0e8f4; stroke: #7a4a9a; stroke-width: 2; }
+      .subagent-inner { fill: #e8d8f0; stroke: #6a3a8a; stroke-width: 1; }
+      .time { fill: #f5f5f5; stroke: #999; stroke-width: 1; stroke-dasharray: 4 2; }
+      .msg { fill: #fff; stroke: #666; stroke-width: 1.5; }
+      .msg-combined { fill: #e8f8e8; stroke: #4a8a4a; stroke-width: 1.5; }
+      .text { font: 13px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #1a1a1a; }
+      .label { font: 11px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #333; }
+      .title { font: bold 16px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #1a1a1a; }
+      .subtitle { font: 14px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #555; }
+      .layer-label { font: bold 12px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #333; }
+      .inner-label { font: 11px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #444; }
+      .inner-desc { font: 10px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #555; }
+      .time-label { font: 9px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #888; }
+      .mode-label { font: bold 10px "SF Pro Text", -apple-system, Helvetica, Arial, sans-serif; fill: #666; }
+      .arrow { stroke: #2b2b2b; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+      .arrow-dashed { stroke: #888; stroke-width: 1.5; fill: none; stroke-dasharray: 5 3; marker-end: url(#arrow-gray); }
+      .arrow-spawn { stroke: #7a4a9a; stroke-width: 1.5; fill: none; stroke-dasharray: 3 2; marker-end: url(#arrow-purple); }
+      .flow { stroke: #4a8a4a; stroke-width: 2; fill: none; marker-end: url(#arrow-green); }
+      .divider { stroke: #ccc; stroke-width: 1; stroke-dasharray: 6 3; fill: none; }
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#2b2b2b" />
+    </marker>
+    <marker id="arrow-gray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#888" />
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#4a8a4a" />
+    </marker>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#7a4a9a" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text class="title" x="550" y="30" text-anchor="middle">OpenClaw Message &#38; Session Processing Flow</text>
+  <text class="subtitle" x="550" y="52" text-anchor="middle">Debounce &#8594; Session &#8594; Queue &#8594; Subagent</text>
+
+  <!-- ========== Part 1: Debounce ========== -->
+  <text class="layer-label" x="30" y="85">&#9312; Inbound Debounce (OFF by default, configurable)</text>
+  
+  <!-- Channel Source -->
+  <rect class="channel" x="30" y="100" width="120" height="50" rx="6" />
+  <text class="text" x="90" y="122" text-anchor="middle">Channel</text>
+  <text class="label" x="90" y="138" text-anchor="middle">Telegram/Discord...</text>
+
+  <!-- Message Examples -->
+  <rect class="msg" x="180" y="95" width="70" height="24" rx="4" />
+  <text class="inner-label" x="215" y="111" text-anchor="middle">Msg A</text>
+
+  <rect class="msg" x="180" y="125" width="70" height="24" rx="4" />
+  <text class="inner-label" x="215" y="141" text-anchor="middle">Msg B</text>
+
+  <line class="arrow" x1="150" y1="125" x2="175" y2="108" />
+  <line class="arrow" x1="150" y1="125" x2="175" y2="137" />
+
+  <!-- Debounce Window -->
+  <rect class="debounce" x="280" y="90" width="180" height="70" rx="8" />
+  <text class="layer-label" x="300" y="110">Debounce Buffer</text>
+  <text class="inner-desc" x="300" y="128">Default: 0ms (immediate)</text>
+  <text class="inner-desc" x="300" y="142">Config: messages.inbound.debounceMs</text>
+
+  <line class="arrow" x1="255" y1="108" x2="280" y2="115" />
+  <line class="arrow" x1="255" y1="137" x2="280" y2="130" />
+
+  <!-- Combined Message -->
+  <rect class="msg-combined" x="490" y="100" width="80" height="35" rx="4" />
+  <text class="inner-label" x="530" y="118" text-anchor="middle">Combined</text>
+  <text class="inner-desc" x="530" y="130" text-anchor="middle">A + B</text>
+
+  <line class="flow" x1="460" y1="125" x2="485" y2="118" />
+
+  <!-- ========== Part 2: Session Management ========== -->
+  <line class="divider" x1="30" y1="175" x2="1070" y2="175" />
+  <text class="layer-label" x="30" y="198">&#9313; Session Management &#8212; Same sender = same session (until freshness expires)</text>
+
+  <rect class="session" x="30" y="210" width="280" height="100" rx="8" />
+  <text class="layer-label" x="50" y="230">Session Store</text>
+  
+  <rect class="session-inner" x="45" y="242" width="120" height="55" rx="4" />
+  <text class="inner-label" x="55" y="258">Session Key</text>
+  <text class="inner-desc" x="55" y="272">agent:main:tg:123</text>
+  <text class="inner-desc" x="55" y="286">&#8627; sender identifier</text>
+
+  <rect class="session-inner" x="175" y="242" width="120" height="55" rx="4" />
+  <text class="inner-label" x="185" y="258">Session Entry</text>
+  <text class="inner-desc" x="185" y="272">sessionId: uuid</text>
+  <text class="inner-desc" x="185" y="286">updatedAt: ts</text>
+
+  <!-- Session Freshness Check -->
+  <rect class="session" x="340" y="210" width="320" height="100" rx="8" />
+  <text class="layer-label" x="360" y="230">Freshness Check (when to reset session)</text>
+  
+  <rect class="session-inner" x="355" y="242" width="140" height="55" rx="4" />
+  <text class="mode-label" x="365" y="258">daily (default)</text>
+  <text class="inner-desc" x="365" y="272">Reset at 4:00 AM</text>
+  <text class="inner-desc" x="365" y="286">config: session.reset.atHour</text>
+
+  <rect class="session-inner" x="505" y="242" width="140" height="55" rx="4" />
+  <text class="mode-label" x="515" y="258">idle</text>
+  <text class="inner-desc" x="515" y="272">Reset after N min inactive</text>
+  <text class="inner-desc" x="515" y="286">config: session.reset.idleMinutes</text>
+
+  <line class="arrow" x1="310" y1="265" x2="340" y2="265" />
+  <line class="flow" x1="530" y1="118" x2="560" y2="118" />
+  <path class="flow" d="M 560 118 L 580 118 L 580 185 L 500 185 L 500 210" fill="none" />
+
+  <!-- ========== Part 3: Queue Mechanism ========== -->
+  <line class="divider" x1="30" y1="325" x2="1070" y2="325" />
+  <text class="layer-label" x="30" y="348">&#9314; Followup Queue &#8212; New user messages while Agent is busy</text>
+
+  <!-- Agent Processing -->
+  <rect class="agent" x="30" y="360" width="160" height="85" rx="8" />
+  <text class="layer-label" x="50" y="380">Agent Processing</text>
+  <rect class="agent-inner" x="45" y="392" width="130" height="40" rx="4" />
+  <text class="inner-label" x="110" y="410" text-anchor="middle">Handling Msg A...</text>
+  <text class="inner-desc" x="110" y="424" text-anchor="middle">thinking / tools</text>
+
+  <!-- New Messages Arriving -->
+  <rect class="msg" x="220" y="368" width="70" height="24" rx="4" />
+  <text class="inner-label" x="255" y="384" text-anchor="middle">Msg C</text>
+
+  <rect class="msg" x="220" y="400" width="70" height="24" rx="4" />
+  <text class="inner-label" x="255" y="416" text-anchor="middle">Msg D</text>
+
+  <text class="inner-desc" x="255" y="438" text-anchor="middle">user sends more</text>
+
+  <line class="arrow-dashed" x1="195" y1="402" x2="215" y2="382" />
+  <line class="arrow-dashed" x1="195" y1="402" x2="215" y2="412" />
+
+  <!-- Followup Queue -->
+  <rect class="queue" x="320" y="355" width="200" height="95" rx="8" />
+  <text class="layer-label" x="340" y="375">Followup Queue</text>
+  
+  <rect class="queue-inner" x="335" y="387" width="170" height="50" rx="4" />
+  <text class="inner-desc" x="345" y="403">items: [Msg C, Msg D]</text>
+  <text class="inner-desc" x="345" y="417">debounceMs: 1000</text>
+  <text class="inner-desc" x="345" y="431">cap: 20</text>
+
+  <line class="arrow" x1="295" y1="382" x2="320" y2="400" />
+  <line class="arrow" x1="295" y1="412" x2="320" y2="412" />
+
+  <!-- Queue Modes -->
+  <rect class="queue" x="555" y="355" width="200" height="95" rx="8" />
+  <text class="layer-label" x="575" y="375">Queue Mode (config)</text>
+
+  <rect class="queue-inner" x="570" y="387" width="80" height="50" rx="4" />
+  <text class="mode-label" x="580" y="403">collect</text>
+  <text class="inner-desc" x="580" y="417">(default)</text>
+  <text class="inner-desc" x="580" y="431">merge all</text>
+
+  <rect class="queue-inner" x="660" y="387" width="80" height="50" rx="4" />
+  <text class="mode-label" x="670" y="403">followup</text>
+  <text class="inner-desc" x="670" y="417">one by one</text>
+  <text class="inner-desc" x="670" y="431">in sequence</text>
+
+  <line class="arrow" x1="525" y1="402" x2="555" y2="402" />
+
+  <!-- ========== Part 4: Subagent ========== -->
+  <line class="divider" x1="30" y1="465" x2="1070" y2="465" />
+  <text class="layer-label" x="30" y="488">&#9315; Subagent &#8212; Agent can spawn child sessions for subtasks</text>
+
+  <!-- Parent Session -->
+  <rect class="session" x="30" y="500" width="220" height="95" rx="8" />
+  <text class="layer-label" x="50" y="520">Parent Session</text>
+  <rect class="session-inner" x="45" y="532" width="190" height="50" rx="4" />
+  <text class="inner-desc" x="55" y="548">Key: agent:main:telegram:alice</text>
+  <text class="inner-desc" x="55" y="562">Task: "Research React vs Vue</text>
+  <text class="inner-desc" x="55" y="576">and write a report"</text>
+
+  <!-- Spawn arrows -->
+  <line class="arrow-spawn" x1="250" y1="530" x2="290" y2="515" />
+  <line class="arrow-spawn" x1="250" y1="570" x2="290" y2="585" />
+  <text class="inner-desc" x="270" y="548" text-anchor="middle">spawn</text>
+
+  <!-- Subagent 1 -->
+  <rect class="subagent" x="300" y="495" width="200" height="50" rx="6" />
+  <text class="layer-label" x="320" y="515">Subagent: research-react</text>
+  <text class="inner-desc" x="320" y="532">Key: agent:main:subagent:react-abc</text>
+
+  <!-- Subagent 2 -->
+  <rect class="subagent" x="300" y="555" width="200" height="50" rx="6" />
+  <text class="layer-label" x="320" y="575">Subagent: research-vue</text>
+  <text class="inner-desc" x="320" y="592">Key: agent:main:subagent:vue-xyz</text>
+
+  <!-- Subagent features -->
+  <rect class="subagent" x="540" y="500" width="250" height="110" rx="8" />
+  <text class="layer-label" x="560" y="520">Subagent Features</text>
+  <text class="inner-desc" x="560" y="540">&#8226; Independent session &#38; transcript</text>
+  <text class="inner-desc" x="560" y="556">&#8226; Isolated context from parent</text>
+  <text class="inner-desc" x="560" y="572">&#8226; Can run in parallel</text>
+  <text class="inner-desc" x="560" y="588">&#8226; Reports results back to parent</text>
+  <text class="inner-desc" x="560" y="604">&#8226; Lifecycle: until task done or killed</text>
+
+  <line class="arrow" x1="505" y1="545" x2="540" y2="545" />
+
+  <!-- ========== Part 5: Timeline Example ========== -->
+  <line class="divider" x1="30" y1="625" x2="1070" y2="625" />
+  <text class="layer-label" x="30" y="648">&#9316; Timeline Example</text>
+
+  <!-- Timeline -->
+  <line stroke="#aaa" stroke-width="2" x1="80" y1="700" x2="1050" y2="700" />
+  <text class="time-label" x="80" y="720">t=0</text>
+  <text class="time-label" x="280" y="720">t=500ms</text>
+  <text class="time-label" x="480" y="720">t=1s</text>
+  <text class="time-label" x="680" y="720">t=2s</text>
+  <text class="time-label" x="880" y="720">t=5s</text>
+
+  <!-- Event Points -->
+  <circle cx="80" cy="700" r="5" fill="#b86b00" />
+  <text class="inner-label" x="80" y="685" text-anchor="middle">Msg A</text>
+
+  <circle cx="280" cy="700" r="5" fill="#b86b00" />
+  <text class="inner-label" x="280" y="685" text-anchor="middle">Msg B</text>
+
+  <circle cx="480" cy="700" r="5" fill="#5a4a9a" />
+  <text class="inner-label" x="480" y="685" text-anchor="middle">Agent starts</text>
+  <text class="inner-desc" x="480" y="670" text-anchor="middle">same session</text>
+
+  <circle cx="680" cy="700" r="5" fill="#b86b00" />
+  <text class="inner-label" x="680" y="685" text-anchor="middle">Msg C</text>
+  <text class="inner-desc" x="680" y="670" text-anchor="middle">&#8594; queue</text>
+
+  <circle cx="780" cy="700" r="5" fill="#7a4a9a" />
+  <text class="inner-label" x="780" y="685" text-anchor="middle">Spawn</text>
+  <text class="inner-desc" x="780" y="670" text-anchor="middle">subagent</text>
+
+  <circle cx="880" cy="700" r="5" fill="#3d7a3d" />
+  <text class="inner-label" x="880" y="685" text-anchor="middle">Reply A+B</text>
+
+  <circle cx="980" cy="700" r="5" fill="#3d7a3d" />
+  <text class="inner-label" x="980" y="685" text-anchor="middle">Process C</text>
+
+  <!-- Status Bars -->
+  <rect fill="#e8e0f4" x="480" y="730" width="400" height="16" rx="3" />
+  <text class="time-label" x="680" y="742" text-anchor="middle">Parent session processing (agent:main:telegram:alice)</text>
+
+  <rect fill="#f0e8f4" x="780" y="750" width="200" height="16" rx="3" />
+  <text class="time-label" x="880" y="762" text-anchor="middle">Subagent running (agent:main:subagent:...)</text>
+
+  <!-- Key Takeaways -->
+  <rect fill="#f8f8f8" stroke="#ddd" x="30" y="785" width="1040" height="155" rx="6" />
+  <text class="layer-label" x="50" y="810">Key Takeaways:</text>
+  
+  <text class="inner-label" x="50" y="832">&#9312; Debounce: OFF by default (0ms). Enable via messages.inbound.debounceMs to batch rapid messages.</text>
+  
+  <text class="inner-label" x="50" y="854">&#9313; Session: Same sender = same session. Resets daily at 4AM (default) or after idle timeout (configurable).</text>
+  
+  <text class="inner-label" x="50" y="876">&#9314; Queue: New messages during agent processing go to Followup Queue. Mode: collect (merge) or followup (sequential).</text>
+  
+  <text class="inner-label" x="50" y="898">&#9315; Subagent: Agent can spawn child sessions for subtasks. Each has independent context and transcript.</text>
+  
+  <text class="inner-label" x="50" y="925" style="font-weight: bold">&#8658; Messages from the same sender are ALWAYS in the same session &#8212; rapid messages do NOT create multiple sessions.</text>
+
+</svg>
