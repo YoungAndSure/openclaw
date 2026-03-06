@@ -21,8 +21,19 @@ function resolveStateDirFromEnv(env: NodeJS.ProcessEnv = process.env): string {
 }
 
 function resolveNamespaceFilePath(namespace: string): string {
+  // Support both legacy single-file (accountId) and new per-agent dedup
+  // For backward compatibility: if namespace contains "default", keep using single file
+  // New format: dedup/{agentId}.json for multi-bot broadcast
   const safe = namespace.replace(/[^a-zA-Z0-9_-]/g, "_");
-  return path.join(resolveStateDirFromEnv(), "feishu", "dedup", `${safe}.json`);
+  const dedupDir = path.join(resolveStateDirFromEnv(), "feishu", "dedup");
+
+  // If it's a known accountId (legacy), use single file; otherwise use agent-specific
+  const legacyAccounts = ["default", "b", "c", "d", "e", "f"];
+  if (legacyAccounts.includes(namespace)) {
+    return path.join(dedupDir, `${safe}.json`);
+  }
+  // New: use agent-specific dedup file
+  return path.join(dedupDir, `${safe}.json`);
 }
 
 const persistentDedupe = createPersistentDedupe({
