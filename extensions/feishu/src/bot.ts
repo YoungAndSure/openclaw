@@ -1,3 +1,4 @@
+import * as Lark from "@larksuiteoapi/node-sdk";
 import type { ClawdbotConfig, RuntimeEnv } from "openclaw/plugin-sdk";
 import {
   buildAgentMediaPayload,
@@ -496,6 +497,72 @@ export function parseFeishuMessageEvent(
   return ctx;
 }
 
+// --- Multi-bot broadcast ---
+function getAllAgentMappings() {
+  const map = new Map();
+  try {
+    const agentsDir = (
+      process.env.OPENCLAW_WORKSPACE_DIR || "/home/youngsure/.openclaw/workspace"
+    ).replace("/workspace", "/agents");
+    const fs2 = require("fs");
+    if (!fs2.existsSync(agentsDir)) return map;
+    const dirs = fs2.readdirSync(agentsDir);
+    for (const dir of dirs) {
+      const authFile = agentsDir + "/" + dir + "/agent/auth-profiles.json";
+      if (fs2.existsSync(authFile)) {
+        try {
+          const auth = JSON.parse(fs2.readFileSync(authFile, "utf8"));
+          for (const [key, profile] of Object.entries(auth)) {
+            const p = profile;
+            if (p.feishu && p.feishu.appId) {
+              map.set(p.feishu.appId, { agentId: dir, accountId: key });
+            }
+          }
+        } catch (e) {}
+      }
+    }
+  } catch (e) {}
+  return map;
+}
+
+async function getChatBotsInGroup(chatId, appId, appSecret, domain, log) {
+  const bots = [];
+  try {
+    const client = new Lark.Client({
+      appId,
+      appSecret,
+      domain: domain === "lark" ? Lark.Domain.Lark : Lark.Domain.Feishu,
+    });
+    log("[DEBUG] Calling feishu API for chatId: " + chatId);
+    const res = await client.chat.members({
+      path: { chat_id: chatId },
+      params: { member_id_type: "app_id" },
+    });
+    log("[DEBUG] Feishu API response: " + JSON.stringify(res));
+    if (!res || res.code !== 0) return bots;
+    if (!res.data?.items) return bots;
+    const appIdToAgentMap = getAllAgentMappings();
+    log("[DEBUG] Agent mappings count: " + appIdToAgentMap.size);
+    for (const member of res.data.items) {
+      if (member.member_type === "app" && member.member_id) {
+        const mapping = appIdToAgentMap.get(member.member_id);
+        if (mapping) {
+          bots.push({
+            agentId: mapping.agentId,
+            appId: member.member_id,
+            accountId: mapping.accountId,
+          });
+          log("[DEBUG] Found bot: appId=" + member.member_id + " agentId=" + mapping.agentId);
+        }
+      }
+    }
+  } catch (err) {
+    log("[DEBUG] Exception: " + String(err));
+  }
+  log("[DEBUG] Total bots: " + bots.length);
+  return bots;
+}
+
 export async function handleFeishuMessage(params: {
   cfg: ClawdbotConfig;
   event: FeishuMessageEvent;
@@ -977,6 +1044,18 @@ export async function handleFeishuMessage(params: {
       mentionTargets: ctx.mentionTargets,
       accountId: account.accountId,
     });
+
+    // Multi-bot broadcast test
+    if (isGroup) {
+      const botsInGroup = await getChatBotsInGroup(
+        ctx.chatId,
+        account.appId,
+        account.appSecret,
+        account.domain,
+        log,
+      );
+      log("[DEBUG] Bots in group: " + botsInGroup.length);
+    }
 
     log(`feishu[${account.accountId}]: dispatching to agent (session=${route.sessionKey})`);
 
