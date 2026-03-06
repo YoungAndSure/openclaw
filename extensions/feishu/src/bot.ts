@@ -11,7 +11,7 @@ import {
   resolveDefaultGroupPolicy,
   warnMissingProviderGroupPolicyFallbackOnce,
 } from "openclaw/plugin-sdk";
-import { resolveFeishuAccount } from "./accounts.js";
+import { listEnabledFeishuAccounts, resolveFeishuAccount } from "./accounts.js";
 import { createFeishuClient } from "./client.js";
 import { tryRecordMessagePersistent } from "./dedup.js";
 import { maybeCreateDynamicAgent } from "./dynamic-agent.js";
@@ -498,66 +498,77 @@ export function parseFeishuMessageEvent(
 }
 
 // --- Multi-bot broadcast ---
-function getAllAgentMappings() {
-  const map = new Map();
-  try {
-    const configFile = "/home/youngsure/.openclaw/openclaw.json";
-    const fs2 = require("fs");
-    if (!fs2.existsSync(configFile)) return map;
-    const config = JSON.parse(fs2.readFileSync(configFile, "utf8"));
-    const accounts = config.channels?.feishu?.accounts || {};
-    const bindings = config.bindings || [];
-    for (const [accountId, account] of Object.entries(accounts)) {
-      if (account.appId) {
-        // Find agentId from bindings
-        for (const binding of bindings) {
-          if (binding.match?.channel === "feishu" && binding.match?.accountId === accountId) {
-            map.set(account.appId, { agentId: binding.agentId, accountId });
-            break;
-          }
-        }
-      }
+type BroadcastBotTarget = {
+  agentId: string;
+  accountId: string;
+  appId: string;
+};
+
+function listFeishuBotTargetsFromConfig(cfg: ClawdbotConfig): BroadcastBotTarget[] {
+  const out: BroadcastBotTarget[] = [];
+
+  const bindingsRaw = (cfg as unknown as { bindings?: unknown }).bindings;
+  const bindings = Array.isArray(bindingsRaw) ? bindingsRaw : [];
+  const accountIdToAgentId = new Map<string, string>();
+
+  for (const b of bindings) {
+    const binding = b as { agentId?: unknown; match?: unknown };
+    const agentId = typeof binding.agentId === "string" ? binding.agentId : null;
+    const match = binding.match as { channel?: unknown; accountId?: unknown } | undefined;
+    const channel = typeof match?.channel === "string" ? match.channel : null;
+    const accountId = typeof match?.accountId === "string" ? match.accountId : null;
+    if (agentId && channel === "feishu" && accountId) {
+      accountIdToAgentId.set(accountId, agentId);
     }
-  } catch (e) {}
-  return map;
+  }
+
+  for (const account of listEnabledFeishuAccounts(cfg)) {
+    const appId = account.appId?.trim();
+    if (!appId) continue;
+    const agentId = accountIdToAgentId.get(account.accountId);
+    if (!agentId) continue;
+    out.push({ agentId, accountId: account.accountId, appId });
+  }
+
+  return out;
 }
 
-async function getChatBotsInGroup(chatId, appId, appSecret, domain, log) {
-  const bots = [];
+async function getChatBotsInGroup(params: {
+  cfg: ClawdbotConfig;
+  chatId: string;
+  log: (...args: any[]) => void;
+}): Promise<BroadcastBotTarget[]> {
+  const { cfg, chatId, log } = params;
+  const bots: BroadcastBotTarget[] = [];
   try {
-    const client = new Lark.Client({
-      appId,
-      appSecret,
-      domain: domain === "lark" ? Lark.Domain.Lark : Lark.Domain.Feishu,
-    });
-    log("[DEBUG] Calling feishu API for chatId: " + chatId);
-    const res = await client.im.chatMembers.isInChat({
-      path: { chat_id: chatId },
-      params: { member_id_type: "app_id" },
-    });
-    log("[DEBUG] Feishu API response: " + JSON.stringify(res));
-    if (!res || res.code !== 0) return bots;
-    if (!res.data?.items) return bots;
-    const appIdToAgentMap = getAllAgentMappings();
-    log("[DEBUG] Agent mappings count: " + appIdToAgentMap.size);
-    log("[DEBUG] All members: " + JSON.stringify(res.data.items));
-    for (const member of res.data.items) {
-      if (member.member_type === "app" && member.member_id) {
-        const mapping = appIdToAgentMap.get(member.member_id);
-        if (mapping) {
-          bots.push({
-            agentId: mapping.agentId,
-            appId: member.member_id,
-            accountId: mapping.accountId,
-          });
-          log("[DEBUG] Found bot: appId=" + member.member_id + " agentId=" + mapping.agentId);
+    const targets = listFeishuBotTargetsFromConfig(cfg);
+
+    log(`[DEBUG] Checking ${targets.length} bots for chat: ${chatId}`);
+
+    for (const target of targets) {
+      try {
+        const account = resolveFeishuAccount({ cfg, accountId: target.accountId });
+        if (!account.enabled || !account.configured) continue;
+
+        const client = createFeishuClient(account);
+        const res = await client.im.chatMembers.isInChat({ path: { chat_id: chatId } });
+
+        log(`[DEBUG] Bot ${target.agentId} (${target.appId}): ${res.data?.is_in_chat}`);
+        if (res.data?.is_in_chat) {
+          bots.push(target);
+          log(`[DEBUG] Added bot to broadcast: ${target.agentId}`);
         }
+      } catch (e) {
+        const err = e as { response?: { data?: { msg?: string } }; message?: string };
+        log(
+          `[DEBUG] Error checking bot ${target.agentId}: ${err.response?.data?.msg || err.message || String(e)}`,
+        );
       }
     }
   } catch (err) {
     log("[DEBUG] Exception: " + String(err));
   }
-  log("[DEBUG] Total bots: " + bots.length);
+  log("[DEBUG] Total bots in group: " + bots.length);
   return bots;
 }
 
@@ -1043,30 +1054,6 @@ export async function handleFeishuMessage(params: {
       accountId: account.accountId,
     });
 
-    // Multi-bot broadcast test
-    if (isGroup) {
-      const botsInGroup = await getChatBotsInGroup(
-        ctx.chatId,
-        account.appId,
-        account.appSecret,
-        account.domain,
-        log,
-      );
-      log("[DEBUG] Bots in group: " + botsInGroup.length);
-
-      if (botsInGroup.length > 0) {
-        log("[DEBUG] Starting broadcast to " + botsInGroup.length + " bots");
-        for (const bot of botsInGroup) {
-          if (bot.accountId === account.accountId) {
-            log("[DEBUG] Skipping self: " + bot.accountId);
-            continue;
-          }
-          log("[DEBUG] Broadcasting to bot: " + bot.agentId + " account: " + bot.accountId);
-        }
-        log("[DEBUG] Broadcast complete");
-      }
-    }
-
     log(`feishu[${account.accountId}]: dispatching to agent (session=${route.sessionKey})`);
 
     const { queuedFinal, counts } = await core.channel.reply.dispatchReplyFromConfig({
@@ -1077,6 +1064,64 @@ export async function handleFeishuMessage(params: {
     });
 
     markDispatchIdle();
+
+    // Multi-bot broadcast (group only, user-originated messages only, to avoid loops)
+    if (isGroup && (event.sender.sender_type ?? "user") === "user") {
+      const botsInGroup = await getChatBotsInGroup({ cfg: effectiveCfg, chatId: ctx.chatId, log });
+      const targets = botsInGroup.filter((b) => b.accountId !== account.accountId);
+      if (targets.length > 0) {
+        log(`[DEBUG] Starting broadcast to ${targets.length} bots`);
+        for (const bot of targets) {
+          try {
+            const botRoute = core.channel.routing.resolveAgentRoute({
+              cfg: effectiveCfg,
+              channel: "feishu",
+              accountId: bot.accountId,
+              peer: {
+                kind: "group",
+                id: peerId,
+              },
+              parentPeer:
+                ctx.rootId && topicSessionMode === "enabled"
+                  ? {
+                      kind: "group",
+                      id: ctx.chatId,
+                    }
+                  : null,
+            });
+
+            const botCtxPayload = {
+              ...ctxPayload,
+              SessionKey: botRoute.sessionKey,
+              AccountId: botRoute.accountId,
+            };
+
+            const botDispatch = createFeishuReplyDispatcher({
+              cfg: effectiveCfg,
+              agentId: bot.agentId,
+              runtime: runtime as RuntimeEnv,
+              chatId: ctx.chatId,
+              replyToMessageId: ctx.messageId,
+              mentionTargets: ctx.mentionTargets,
+              accountId: bot.accountId,
+            });
+
+            await core.channel.reply.dispatchReplyFromConfig({
+              ctx: botCtxPayload,
+              cfg: effectiveCfg,
+              dispatcher: botDispatch.dispatcher,
+              replyOptions: botDispatch.replyOptions,
+            });
+            botDispatch.markDispatchIdle();
+
+            log(`[DEBUG] Broadcast dispatched to bot: ${bot.agentId} account: ${bot.accountId}`);
+          } catch (err) {
+            log(`[DEBUG] Broadcast error for bot ${bot.agentId}: ${String(err)}`);
+          }
+        }
+        log("[DEBUG] Broadcast complete");
+      }
+    }
 
     if (isGroup && historyKey && chatHistories) {
       clearHistoryEntriesIfEnabled({
