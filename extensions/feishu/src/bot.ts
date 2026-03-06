@@ -501,24 +501,21 @@ export function parseFeishuMessageEvent(
 function getAllAgentMappings() {
   const map = new Map();
   try {
-    const agentsDir = (
-      process.env.OPENCLAW_WORKSPACE_DIR || "/home/youngsure/.openclaw/workspace"
-    ).replace("/workspace", "/agents");
+    const configFile = "/home/youngsure/.openclaw/openclaw.json";
     const fs2 = require("fs");
-    if (!fs2.existsSync(agentsDir)) return map;
-    const dirs = fs2.readdirSync(agentsDir);
-    for (const dir of dirs) {
-      const authFile = agentsDir + "/" + dir + "/agent/auth-profiles.json";
-      if (fs2.existsSync(authFile)) {
-        try {
-          const auth = JSON.parse(fs2.readFileSync(authFile, "utf8"));
-          for (const [key, profile] of Object.entries(auth)) {
-            const p = profile;
-            if (p.feishu && p.feishu.appId) {
-              map.set(p.feishu.appId, { agentId: dir, accountId: key });
-            }
+    if (!fs2.existsSync(configFile)) return map;
+    const config = JSON.parse(fs2.readFileSync(configFile, "utf8"));
+    const accounts = config.channels?.feishu?.accounts || {};
+    const bindings = config.bindings || [];
+    for (const [accountId, account] of Object.entries(accounts)) {
+      if (account.appId) {
+        // Find agentId from bindings
+        for (const binding of bindings) {
+          if (binding.match?.channel === "feishu" && binding.match?.accountId === accountId) {
+            map.set(account.appId, { agentId: binding.agentId, accountId });
+            break;
           }
-        } catch (e) {}
+        }
       }
     }
   } catch (e) {}
@@ -534,7 +531,7 @@ async function getChatBotsInGroup(chatId, appId, appSecret, domain, log) {
       domain: domain === "lark" ? Lark.Domain.Lark : Lark.Domain.Feishu,
     });
     log("[DEBUG] Calling feishu API for chatId: " + chatId);
-    const res = await client.chat.members({
+    const res = await client.im.chatMembers.isInChat({
       path: { chat_id: chatId },
       params: { member_id_type: "app_id" },
     });
@@ -543,6 +540,7 @@ async function getChatBotsInGroup(chatId, appId, appSecret, domain, log) {
     if (!res.data?.items) return bots;
     const appIdToAgentMap = getAllAgentMappings();
     log("[DEBUG] Agent mappings count: " + appIdToAgentMap.size);
+    log("[DEBUG] All members: " + JSON.stringify(res.data.items));
     for (const member of res.data.items) {
       if (member.member_type === "app" && member.member_id) {
         const mapping = appIdToAgentMap.get(member.member_id);
@@ -1055,6 +1053,18 @@ export async function handleFeishuMessage(params: {
         log,
       );
       log("[DEBUG] Bots in group: " + botsInGroup.length);
+
+      if (botsInGroup.length > 0) {
+        log("[DEBUG] Starting broadcast to " + botsInGroup.length + " bots");
+        for (const bot of botsInGroup) {
+          if (bot.accountId === account.accountId) {
+            log("[DEBUG] Skipping self: " + bot.accountId);
+            continue;
+          }
+          log("[DEBUG] Broadcasting to bot: " + bot.agentId + " account: " + bot.accountId);
+        }
+        log("[DEBUG] Broadcast complete");
+      }
     }
 
     log(`feishu[${account.accountId}]: dispatching to agent (session=${route.sessionKey})`);
