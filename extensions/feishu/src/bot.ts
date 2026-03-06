@@ -1044,6 +1044,98 @@ export async function handleFeishuMessage(params: {
       ...mediaPayload,
     });
 
+    // Pre-notify other Feishu bots in the group before this agent handles the message.
+    // This lets sibling agents observe all conversation messages (user + bot replies).
+    if (isGroup) {
+      const botsInGroup = await getChatBotsInGroup({ cfg: effectiveCfg, chatId: ctx.chatId, log });
+      const targets = botsInGroup.filter((b) => b.accountId !== account.accountId);
+      if (targets.length > 0) {
+        log(`[DEBUG] Pre-broadcast notifying ${targets.length} bots before agent handling`);
+        for (const bot of targets) {
+          try {
+            const botRoute = core.channel.routing.resolveAgentRoute({
+              cfg: effectiveCfg,
+              channel: "feishu",
+              accountId: bot.accountId,
+              peer: {
+                kind: "group",
+                id: peerId,
+              },
+              parentPeer:
+                ctx.rootId && topicSessionMode === "enabled"
+                  ? {
+                      kind: "group",
+                      id: ctx.chatId,
+                    }
+                  : null,
+            });
+
+            const notifyBodyForAgent =
+              `[System] 你是旁听代理（agent ${bot.agentId}），正在观察 Feishu 群 ${ctx.chatId} 的对话。\n` +
+              `这条消息的主要接收者是 agent ${route.agentId}，而不是你；${route.agentId} 正在处理这条消息。\n` +
+              `你可以阅读下面的原始消息来理解上下文。如果你确实有重要补充，可以在群里直接回复用户，` +
+              `但不要把这条系统通知当成用户发给你的单独对话。\n\n` +
+              `原始消息：\n${ctx.content}`;
+
+            const notifyBody = core.channel.reply.formatAgentEnvelope({
+              channel: "Feishu",
+              from: envelopeFrom,
+              timestamp: new Date(),
+              envelope: envelopeOptions,
+              body: notifyBodyForAgent,
+            });
+
+            const botCtxPayload = core.channel.reply.finalizeInboundContext({
+              Body: notifyBody,
+              BodyForAgent: notifyBodyForAgent,
+              RawBody: notifyBodyForAgent,
+              CommandBody: notifyBodyForAgent,
+              From: feishuFrom,
+              To: feishuTo,
+              SessionKey: botRoute.sessionKey,
+              AccountId: botRoute.accountId,
+              ChatType: "group",
+              GroupSubject: ctx.chatId,
+              SenderName: ctx.senderName ?? ctx.senderOpenId,
+              SenderId: ctx.senderOpenId,
+              Provider: "feishu" as const,
+              Surface: "feishu" as const,
+              MessageSid: ctx.messageId,
+              Timestamp: Date.now(),
+              WasMentioned: ctx.mentionedBot,
+              CommandAuthorized: commandAuthorized,
+              OriginatingChannel: "feishu" as const,
+              OriginatingTo: feishuTo,
+            });
+
+            const botDispatch = createFeishuReplyDispatcher({
+              cfg: effectiveCfg,
+              agentId: bot.agentId,
+              runtime: runtime as RuntimeEnv,
+              chatId: ctx.chatId,
+              replyToMessageId: ctx.messageId,
+              mentionTargets: ctx.mentionTargets,
+              accountId: bot.accountId,
+            });
+
+            await core.channel.reply.dispatchReplyFromConfig({
+              ctx: botCtxPayload,
+              cfg: effectiveCfg,
+              dispatcher: botDispatch.dispatcher,
+              replyOptions: botDispatch.replyOptions,
+            });
+            botDispatch.markDispatchIdle();
+
+            log(
+              `[DEBUG] Pre-broadcast notification dispatched to bot: ${bot.agentId} account: ${bot.accountId}`,
+            );
+          } catch (err) {
+            log(`[DEBUG] Pre-broadcast error for bot ${bot.agentId}: ${String(err)}`);
+          }
+        }
+      }
+    }
+
     const { dispatcher, replyOptions, markDispatchIdle } = createFeishuReplyDispatcher({
       cfg,
       agentId: route.agentId,
@@ -1064,64 +1156,6 @@ export async function handleFeishuMessage(params: {
     });
 
     markDispatchIdle();
-
-    // Multi-bot broadcast (group only, user-originated messages only, to avoid loops)
-    if (isGroup && (event.sender.sender_type ?? "user") === "user") {
-      const botsInGroup = await getChatBotsInGroup({ cfg: effectiveCfg, chatId: ctx.chatId, log });
-      const targets = botsInGroup.filter((b) => b.accountId !== account.accountId);
-      if (targets.length > 0) {
-        log(`[DEBUG] Starting broadcast to ${targets.length} bots`);
-        for (const bot of targets) {
-          try {
-            const botRoute = core.channel.routing.resolveAgentRoute({
-              cfg: effectiveCfg,
-              channel: "feishu",
-              accountId: bot.accountId,
-              peer: {
-                kind: "group",
-                id: peerId,
-              },
-              parentPeer:
-                ctx.rootId && topicSessionMode === "enabled"
-                  ? {
-                      kind: "group",
-                      id: ctx.chatId,
-                    }
-                  : null,
-            });
-
-            const botCtxPayload = {
-              ...ctxPayload,
-              SessionKey: botRoute.sessionKey,
-              AccountId: botRoute.accountId,
-            };
-
-            const botDispatch = createFeishuReplyDispatcher({
-              cfg: effectiveCfg,
-              agentId: bot.agentId,
-              runtime: runtime as RuntimeEnv,
-              chatId: ctx.chatId,
-              replyToMessageId: ctx.messageId,
-              mentionTargets: ctx.mentionTargets,
-              accountId: bot.accountId,
-            });
-
-            await core.channel.reply.dispatchReplyFromConfig({
-              ctx: botCtxPayload,
-              cfg: effectiveCfg,
-              dispatcher: botDispatch.dispatcher,
-              replyOptions: botDispatch.replyOptions,
-            });
-            botDispatch.markDispatchIdle();
-
-            log(`[DEBUG] Broadcast dispatched to bot: ${bot.agentId} account: ${bot.accountId}`);
-          } catch (err) {
-            log(`[DEBUG] Broadcast error for bot ${bot.agentId}: ${String(err)}`);
-          }
-        }
-        log("[DEBUG] Broadcast complete");
-      }
-    }
 
     if (isGroup && historyKey && chatHistories) {
       clearHistoryEntriesIfEnabled({
