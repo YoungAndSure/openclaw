@@ -7,6 +7,7 @@ import {
   type RuntimeEnv,
 } from "openclaw/plugin-sdk";
 import { resolveFeishuAccount } from "./accounts.js";
+import { broadcastAgentReplyToOtherBots } from "./bot.js";
 import { createFeishuClient } from "./client.js";
 import type { MentionTarget } from "./mention.js";
 import { buildMentionedCardContent } from "./mention.js";
@@ -192,6 +193,23 @@ export function createFeishuReplyDispatcher(params: CreateFeishuReplyDispatcherP
               accountId,
             });
             first = false;
+          }
+        }
+
+        // Broadcast agent reply to other bots in the group (only on final delivery)
+        if (info?.kind === "final" && chatId.startsWith("oc_")) {
+          try {
+            await broadcastAgentReplyToOtherBots({
+              cfg,
+              chatId,
+              accountId: accountId || account.accountId,
+              agentId,
+              replyText: text,
+              replyMessageId: replyToMessageId,
+              runtime: params.runtime,
+            });
+          } catch (err) {
+            params.runtime.log?.(`feishu: broadcast agent reply error: ${String(err)}`);
           }
         }
       },

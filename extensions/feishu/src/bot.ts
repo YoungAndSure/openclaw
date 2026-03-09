@@ -540,6 +540,9 @@ async function getChatBotsInGroup(params: {
 }): Promise<BroadcastBotTarget[]> {
   const { cfg, chatId, log } = params;
   const bots: BroadcastBotTarget[] = [];
+  log(
+    `[DEBUG] getChatBotsInGroup: cfg type = ${typeof cfg}, has channels = ${!!(cfg as any)?.channels}, has bindings = ${!!(cfg as any)?.bindings}`,
+  );
   try {
     const targets = listFeishuBotTargetsFromConfig(cfg);
 
@@ -570,6 +573,135 @@ async function getChatBotsInGroup(params: {
   }
   log("[DEBUG] Total bots in group: " + bots.length);
   return bots;
+}
+
+/**
+ * Broadcast an agent's reply message to other bots in the group.
+ * This enables multi-agent scenarios where each agent can see other agents' replies.
+ */
+export async function broadcastAgentReplyToOtherBots(params: {
+  cfg: ClawdbotConfig;
+  chatId: string;
+  accountId: string;
+  agentId: string;
+  replyText: string;
+  replyMessageId?: string;
+  runtime?: RuntimeEnv;
+}): Promise<void> {
+  const { chatId, accountId, agentId, replyText, replyMessageId, runtime } = params;
+  const log = runtime?.log ?? console.log;
+
+  // Get complete config with bindings from runtime
+  const core = getFeishuRuntime();
+  const cfg = core.config.loadConfig() as ClawdbotConfig;
+
+  log(
+    `[DEBUG] broadcastAgentReplyToOtherBots called: chatId=${chatId}, accountId=${accountId}, agentId=${agentId}`,
+  );
+
+  if (!chatId.startsWith("oc_")) {
+    log(`feishu: skip broadcast - not a group chat (${chatId})`);
+    return;
+  }
+
+  // 1. Get all bots in the group
+  let botsInGroup: BroadcastBotTarget[] = [];
+  try {
+    botsInGroup = await getChatBotsInGroup({ cfg, chatId, log });
+  } catch (err) {
+    log(`[DEBUG] getChatBotsInGroup error: ${String(err)}`);
+    // Fallback: try to get bots from enabled accounts if cfg lacks bindings
+    log(`[DEBUG] trying fallback: get bots from enabled accounts`);
+    const allAccounts = listEnabledFeishuAccounts(cfg);
+    for (const acc of allAccounts) {
+      if (acc.accountId !== accountId && acc.appId) {
+        botsInGroup.push({
+          agentId: acc.accountId, // Use accountId as agentId fallback
+          accountId: acc.accountId,
+          appId: acc.appId,
+        });
+      }
+    }
+    log(`[DEBUG] fallback found ${botsInGroup.length} bots`);
+  }
+
+  // 2. Exclude current bot (no need to receive its own reply)
+  const targets = botsInGroup.filter((b) => b.accountId !== accountId);
+
+  if (targets.length === 0) {
+    log(`feishu: no other bots in group ${chatId}, skip broadcast`);
+    return;
+  }
+
+  // 3. Broadcast to each target bot
+  for (const bot of targets) {
+    try {
+      // Resolve target bot's route
+      log(
+        `[DEBUG] broadcast: resolving route for bot ${bot.agentId}, accountId ${bot.accountId}, peer ${chatId}`,
+      );
+      const botRoute = core.channel.routing.resolveAgentRoute({
+        cfg,
+        channel: "feishu",
+        accountId: bot.accountId,
+        peer: {
+          kind: "group",
+          id: chatId,
+        },
+        agentId: bot.agentId,
+      });
+      log(`[DEBUG] broadcast: got route, sessionKey = ${botRoute.sessionKey}`);
+
+      // Construct notification context (tell other agent: some agent replied)
+      const notifyBodyForAgent =
+        `[System] Agent "${agentId}" 在群里回复了消息：\n\n` +
+        `--- 原始回复内容 ---\n${replyText}\n` +
+        `--- 结束 ---\n` +
+        `你可以选择忽略或回复此消息。`;
+
+      const botCtxPayload = core.channel.reply.finalizeInboundContext({
+        sessionKey: botRoute.sessionKey,
+        accountId: botRoute.accountId,
+        message: {
+          message_id: replyMessageId || `broadcast-${Date.now()}`,
+          content: notifyBodyForAgent,
+          message_type: "text",
+        },
+        sender: {
+          sender_id: {
+            open_id: accountId,
+          },
+          sender_type: "app",
+        },
+        chat_id: chatId,
+        chat_type: "group",
+      });
+
+      // Create reply dispatcher for target bot
+      const botDispatch = createFeishuReplyDispatcher({
+        cfg,
+        agentId: bot.agentId,
+        runtime,
+        chatId,
+        replyToMessageId: replyMessageId,
+        accountId: bot.accountId,
+      });
+
+      // Dispatch broadcast message
+      await core.channel.reply.dispatchReplyFromConfig({
+        ctx: botCtxPayload,
+        cfg,
+        dispatcher: botDispatch.dispatcher,
+        replyOptions: botDispatch.replyOptions,
+      });
+
+      botDispatch.markDispatchIdle();
+
+      log(`feishu: broadcast agent reply to bot ${bot.agentId} (account ${bot.accountId})`);
+    } catch (err) {
+      log(`feishu: broadcast error for bot ${bot.agentId}: ${String(err)}`);
+    }
+  }
 }
 
 export async function handleFeishuMessage(params: {
